@@ -22,3 +22,4 @@ doc/
 .secret
 
 /config/database.yml
+/db_design
