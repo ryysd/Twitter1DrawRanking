@@ -1,5 +1,5 @@
 class IllustsController < ApplicationController
-  def search
-    render :json => "aaaaaaaaaaa"
+  def index
+    render :json => client.search("#ruby -rt", lang: "ja").first.text
   end
 end
