@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150428154426) do
+ActiveRecord::Schema.define(version: 20150428163726) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "name",       limit: 255
