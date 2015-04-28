@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150427144136) do
+ActiveRecord::Schema.define(version: 20150428151236) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -21,14 +21,21 @@ ActiveRecord::Schema.define(version: 20150427144136) do
   end
 
   create_table "illusts", force: :cascade do |t|
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
-    t.integer  "authors_id",      limit: 4,   null: false
-    t.integer  "genres_id",       limit: 4,   null: false
-    t.string   "url",             limit: 255, null: false
-    t.integer  "favorited_count", limit: 4,   null: false
-    t.integer  "retweeted_count", limit: 4,   null: false
-    t.integer  "reply_count",     limit: 4,   null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+    t.string   "url",        limit: 255, null: false
+    t.integer  "tweets_id",  limit: 4,   null: false
+  end
+
+  create_table "tweets", force: :cascade do |t|
+    t.string   "url",            limit: 255, null: false
+    t.integer  "favorite_count", limit: 4,   null: false
+    t.integer  "retweet_count",  limit: 4,   null: false
+    t.integer  "reply_count",    limit: 4,   null: false
+    t.integer  "authors_id",     limit: 4,   null: false
+    t.integer  "genres_id",      limit: 4,   null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
 end
