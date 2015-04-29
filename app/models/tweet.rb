@@ -2,7 +2,7 @@ class Tweet < ActiveRecord::Base
   has_many :illusts
 
   def self.create_by_genre(genre)
-    Tweet.client.search("##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).take(3).map do |tweet|
+    Tweet.client.search("##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
       next if !tweet.media?
       next if Tweet.exists? id: tweet.id
 

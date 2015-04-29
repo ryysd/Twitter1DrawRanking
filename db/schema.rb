@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150428163726) do
+ActiveRecord::Schema.define(version: 20150429021849) do
 
   create_table "genres", force: :cascade do |t|
     t.string   "name",       limit: 255
@@ -25,6 +25,19 @@ ActiveRecord::Schema.define(version: 20150428163726) do
     t.datetime "updated_at",             null: false
     t.string   "url",        limit: 255, null: false
     t.integer  "tweets_id",  limit: 8,   null: false
+  end
+
+  create_table "ranking_types", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  create_table "rankings", force: :cascade do |t|
+    t.integer  "genres_id",        limit: 4
+    t.integer  "ranking_types_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   create_table "tweets", force: :cascade do |t|
