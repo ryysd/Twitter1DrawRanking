@@ -2,20 +2,26 @@ class Tweet < ActiveRecord::Base
   has_many :illusts
 
   def self.create_by_genre(genre)
-    Tweet.client.search("##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
+    Tweet.client.search("##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).take(10).map do |tweet|
       next if !tweet.media?
       next if Tweet.exists? id: tweet.id
 
-      tweet.media.map do |media|
-        Illust.create url: media.media_url,
+      tweet.media.each do |media|
+        next if Illust.exists? media.id
+
+        Illust.create id: media.id,
+          url: media.media_url,
           tweets_id: tweet.id
       end
 
-      Tweet.create id: tweet.id,
-        url: tweet.url,
+      TweetValue.create tweets_id: tweet.id,
         favorite_count: tweet.favorite_count,
         retweet_count: tweet.retweet_count,
-        reply_count: 0,
+        reply_count: 0
+
+      Tweet.create id: tweet.id,
+        url: tweet.url,
+        text: tweet.text,
         authors_id: 0,
         genres_id: genre.id,
         created_at: tweet.created_at
