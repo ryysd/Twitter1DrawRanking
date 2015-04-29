@@ -1,5 +1,6 @@
 class Tweet < ActiveRecord::Base
   has_many :illusts
+  has_many :tweet_values
 
   def self.create_by_genre(genre)
     (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).take(10).map do |tweet|
