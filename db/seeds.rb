@@ -8,3 +8,7 @@
 
 
 Genre.create id: 1, name: '艦これ', hash_tag: '艦これ版深夜の真剣お絵描き60分一本勝負'
+
+RankingType.create id: 1, name: 'hourly'
+RankingType.create id: 2, name: 'daily'
+RankingType.create id: 3, name: 'monthly'

@@ -1,25 +1,56 @@
 class Tweet < ActiveRecord::Base
   has_many :illusts
+  has_many :tweet_values
 
   def self.create_by_genre(genre)
-    Tweet.client.search("##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).take(3).map do |tweet|
-      next if !tweet.media?
+    (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).take(10).map do |tweet|
+      next unless tweet.media?
       next if Tweet.exists? id: tweet.id
 
-      tweet.media.map do |media|
-        Illust.create url: media.media_url,
-          tweets_id: tweet.id
-      end
+      ActiveRecord::Base.transaction do
+        tweet.media.each do |media|
+          next if Illust.exists? media.id
 
-      Tweet.create id: tweet.id,
-        url: tweet.url,
-        favorite_count: tweet.favorite_count,
-        retweet_count: tweet.retweet_count,
-        reply_count: 0,
-        authors_id: 0,
-        genres_id: genre.id,
-        created_at: tweet.created_at
+          Illust.create id: media.id,
+            url: media.media_url,
+            tweets_id: tweet.id
+        end
+
+        TweetValue.create tweets_id: tweet.id,
+          favorite_count: tweet.favorite_count,
+          retweet_count: tweet.retweet_count,
+          reply_count: 0
+
+        Tweet.create id: tweet.id,
+          url: tweet.url,
+          text: tweet.text,
+          authors_id: 0,
+          genres_id: genre.id,
+          created_at: tweet.created_at
+      end
     end
+  end
+
+  def self.update_values(tweet_ids)
+    (Tweet.client.statuses tweet_ids).each do |tweet|
+      next unless Tweet.exists? id: tweet.id
+
+      ActiveRecord::Base.transaction do
+        t =Tweet.find tweet.id
+        t.touch
+        t.save
+
+        TweetValue.create tweets_id: tweet.id,
+          favorite_count: tweet.favorite_count,
+          retweet_count: tweet.retweet_count,
+          reply_count: 0
+      end
+    end
+  end
+
+  def self.update_values_by_updated_at(time_range)
+    tweet_ids = (Tweet.where updated_at: time_range.begin...time_range.end).map {|tweet| tweet.id}
+    Tweet.update_values tweet_ids unless tweet_ids.nil?
   end
 
   def self.client

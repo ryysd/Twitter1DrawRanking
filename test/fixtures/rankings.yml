@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  genres_id: 1
+  ranking_types_id: 1
+
+two:
+  genres_id: 1
+  ranking_types_id: 1
