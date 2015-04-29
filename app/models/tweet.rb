@@ -31,20 +31,24 @@ class Tweet < ActiveRecord::Base
     end
   end
 
+  def self.update_value_by_tweet(tweet)
+    ActiveRecord::Base.transaction do
+      t =Tweet.find tweet.id
+      t.touch
+      t.save
+
+      TweetValue.create tweets_id: tweet.id,
+        favorite_count: tweet.favorite_count,
+        retweet_count: tweet.retweet_count,
+        reply_count: 0
+    end
+  end
+
   def self.update_values(tweet_ids)
     (Tweet.client.statuses tweet_ids).each do |tweet|
       next unless Tweet.exists? id: tweet.id
 
-      ActiveRecord::Base.transaction do
-        t =Tweet.find tweet.id
-        t.touch
-        t.save
-
-        TweetValue.create tweets_id: tweet.id,
-          favorite_count: tweet.favorite_count,
-          retweet_count: tweet.retweet_count,
-          reply_count: 0
-      end
+      Tweet.update_value_by_tweet tweet
     end
   end
 
