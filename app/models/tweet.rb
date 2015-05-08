@@ -8,6 +8,11 @@ class Tweet < ActiveRecord::Base
       next if Tweet.exists? id: tweet.id
 
       ActiveRecord::Base.transaction do
+        if Tweet.exists? tweet.id
+          Tweet.update_value_by_tweet tweet
+          next
+        end
+
         tweet.media.each do |media|
           next if Illust.exists? media.id
 
@@ -24,18 +29,31 @@ class Tweet < ActiveRecord::Base
         Tweet.create id: tweet.id,
           url: tweet.url,
           text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
-          authors_id: 0,
+          authors_id: tweet.user.id,
           genres_id: genre.id,
           created_at: tweet.created_at
       end
     end
   end
 
+  def self.update_date(id)
+    t =Tweet.find id
+    t.touch
+    t.save
+  end
+
+  def self.value_is_updated?(id, value)
+    latest_value = TweetValue.find_latest_value id
+    return false unless latest_value.nil?
+
+    return latest_value.favorite_count != value.favorite_count ||
+           latest_value.retweet_count != value.retweet_count ||
+           latest_value.reply_count != value.reply_count
+  end
+
   def self.update_value_by_tweet(tweet)
     ActiveRecord::Base.transaction do
-      t =Tweet.find tweet.id
-      t.touch
-      t.save
+      Tweet.update_date tweet.id
 
       TweetValue.create tweets_id: tweet.id,
         favorite_count: tweet.favorite_count,
