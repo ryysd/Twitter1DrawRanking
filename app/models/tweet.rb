@@ -8,11 +8,6 @@ class Tweet < ActiveRecord::Base
       next if Tweet.exists? id: tweet.id
 
       ActiveRecord::Base.transaction do
-        if Tweet.exists? tweet.id
-          Tweet.update_value_by_tweet tweet
-          next
-        end
-
         tweet.media.each do |media|
           next if Illust.exists? media.id
 
