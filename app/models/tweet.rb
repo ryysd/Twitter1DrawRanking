@@ -3,7 +3,7 @@ class Tweet < ActiveRecord::Base
   has_many :tweet_values
   belongs_to :users
 
-  def self.create_by_genre(genre)
+  def self.fetch_by_genre(genre)
     (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
       next unless tweet.media?
       next if Tweet.exists? tweet.id
@@ -20,7 +20,7 @@ class Tweet < ActiveRecord::Base
           genres_id: genre.id,
           created_at: tweet.created_at
       end
-    end
+    end.compact
   end
 
   def self.update_date(id)
@@ -47,11 +47,11 @@ class Tweet < ActiveRecord::Base
   end
 
   def self.update_values(tweet_ids)
-    (Tweet.client.statuses tweet_ids).each do |tweet|
+    (Tweet.client.statuses tweet_ids).map do |tweet|
       next unless Tweet.exists? tweet.id
 
       Tweet.update_value_by_tweet tweet
-    end
+    end.compact
   end
 
   def self.update_values_by_updated_at(time_range)
