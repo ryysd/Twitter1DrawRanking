@@ -6,7 +6,7 @@ class TweetValue < ActiveRecord::Base
   end
 
   def self.create_from_object(tweet)
-    TweetValue.create! tweets_id: tweet.id,
+    TweetValue.create! tweet_id: tweet.id,
       favorite_count: tweet.favorite_count,
       retweet_count: tweet.retweet_count,
       reply_count: 0

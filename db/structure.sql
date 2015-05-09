@@ -30,7 +30,7 @@ CREATE TABLE `genres` (
   `updated_at` datetime NOT NULL,
   `start_time` time NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `illusts` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `tweets_id` bigint(20) NOT NULL,
+  `tweet_id` bigint(20) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -63,7 +63,7 @@ CREATE TABLE `ranking_types` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,8 +75,8 @@ DROP TABLE IF EXISTS `rankings`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rankings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `genres_id` int(11) DEFAULT NULL,
-  `ranking_types_id` int(11) DEFAULT NULL,
+  `genre_id` int(11) DEFAULT NULL,
+  `ranking_type_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -108,11 +108,11 @@ CREATE TABLE `tweet_values` (
   `favorite_count` int(11) NOT NULL,
   `retweet_count` int(11) NOT NULL,
   `reply_count` int(11) NOT NULL,
-  `tweets_id` bigint(20) NOT NULL,
+  `tweet_id` bigint(20) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3895 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -125,8 +125,8 @@ DROP TABLE IF EXISTS `tweets`;
 CREATE TABLE `tweets` (
   `id` bigint(20) NOT NULL,
   `url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `users_id` bigint(20) NOT NULL,
-  `genres_id` int(11) NOT NULL,
+  `user_id` bigint(20) NOT NULL,
+  `genre_id` int(11) NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   `text` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-09 14:00:50
+-- Dump completed on 2015-05-09 18:31:54
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -204,4 +204,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150509005349');
 INSERT INTO schema_migrations (version) VALUES ('20150509045705');
 
 INSERT INTO schema_migrations (version) VALUES ('20150509045955');
+
+INSERT INTO schema_migrations (version) VALUES ('20150509092625');
 

@@ -5,7 +5,7 @@ class Illust < ActiveRecord::Base
 
       Illust.create! id: media.id,
         url: media.media_url,
-        tweets_id: tweet_id
+        tweet_id: tweet_id
     end
   end
 end
