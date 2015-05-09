@@ -8,10 +8,11 @@ namespace :one_draw do
 
       logger.info "#{Time.now} -- #{genre.hash_tag} fetch start --"
       begin
-        tweets = genre.fetch
+        tweets = Tweet.fetch genre
         logger.info "#{Time.now} -- #{genre.hash_tag} fetch end (#{tweets.size} fetched)--"
       rescue => e
         logger.info "#{Time.now} -- #{genre.hash_tag} fetch error (#{e}) --"
+        logger.info e.backtrace
       end
     end
 
@@ -28,6 +29,7 @@ namespace :one_draw do
         logger.info "#{Time.now} -- update end (#{values.size} updated)--"
       rescue => e
         logger.info "#{Time.now} -- update error (#{e})--"
+        logger.info e.backtrace
       end
     end
 
