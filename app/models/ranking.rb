@@ -11,4 +11,10 @@ class Ranking < ActiveRecord::Base
       genre_id: genre.id,
       tweets: target_tweets
   end
+
+  def to_json
+    tweets.map do |tweet|
+      tweet.tweet_values
+    end
+  end
 end

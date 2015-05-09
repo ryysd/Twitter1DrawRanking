@@ -4,6 +4,7 @@ class Tweet < ActiveRecord::Base
   has_many :tweet_rankings
   belongs_to :users
 
+  scope :by_genre_id, ->(genre_id) {where(genre_id: genre_id)}
   scope :by_updated_at, ->(updated_at) {where(updated_at: updated_at)}
   scope :by_created_at, ->(created_at) {where(created_at: created_at)}
   scope :recent, -> {order('updated_at DESC')}
@@ -36,13 +37,14 @@ class Tweet < ActiveRecord::Base
     end
   end
 
+  def self.update(genre)
+    term = genre.contest_term_now
+    tweet_ids = ((Tweet.by_genre_id genre.id).by_created_at term).map {|tweet| tweet.id}
+    Tweet.update_by_ids tweet_ids
+  end
+
   def self.update_by_ids(tweet_ids)
     tweets = AuthedTwitter.client.statuses tweet_ids
     tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
-  end
-
-  def self.update_by_period(period)
-    tweet_ids = (Tweet.by_updated_at period).older.map {|tweet| tweet.id}
-    Tweet.update_by_ids tweet_ids
   end
 end

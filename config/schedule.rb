@@ -3,5 +3,5 @@ set :environment, :development
 set :output, '/usr/local/var/log/cron/cron.log'
 
 every :hour do
-  rake "one_draw:illust:fetch_and_update"
+  rake "one_draw:illust:update_and_fetch"
 end
