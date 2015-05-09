@@ -14,13 +14,13 @@ class Tweet < ActiveRecord::Base
     keyword = "##{genre.hash_tag}"
     contest_term = genre.contest_term
 
-    Tweet.make_fetch_query keyword, since_time: contest_term.begin, until_time: contest_term.end
+    AuthedTwitter.make_query keyword, since_time: contest_term.begin, until_time: contest_term.end
   end
 
   def self.fetch(genre)
     query = Tweet.make_fetch_query_by_genre genre
 
-    (Tweet.client.search query, locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
+    (AuthedTwitter.client.search query, locale: "ja", lang: "ja", result_type: 'recent', include_entity: true).map do |tweet|
       next unless tweet.media?
       next if Tweet.exists? tweet.id
 
@@ -63,7 +63,7 @@ class Tweet < ActiveRecord::Base
   end
 
   def self.update_values(tweet_ids)
-    (Tweet.client.statuses tweet_ids).map do |tweet|
+    (AuthedTwitter.client.statuses tweet_ids).map do |tweet|
       next unless Tweet.exists? tweet.id
 
       Tweet.update_value_by_tweet tweet
@@ -73,14 +73,5 @@ class Tweet < ActiveRecord::Base
   def self.update_values_by_updated_at(time_range)
     tweet_ids = ((Tweet.where updated_at: time_range.begin...time_range.end).order 'updated_at ASC').map {|tweet| tweet.id}
     Tweet.update_values tweet_ids unless tweet_ids.nil?
-  end
-
-  def self.client
-    @@client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = Rails.application.secrets.twitter_consumer_key
-      config.consumer_secret     = Rails.application.secrets.twitter_consumer_secret
-      config.access_token        = Rails.application.secrets.twitter_access_token
-      config.access_token_secret = Rails.application.secrets.twitter_access_token_secret
-    end
   end
 end
