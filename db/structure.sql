@@ -111,7 +111,7 @@ CREATE TABLE `tweet_values` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29802 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34768 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -144,7 +144,6 @@ CREATE TABLE `users` (
   `id` bigint(20) NOT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `icon_url` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `twitter_id` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -160,7 +159,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-09  9:42:11
+-- Dump completed on 2015-05-09  9:54:07
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -198,4 +197,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150509003515');
 INSERT INTO schema_migrations (version) VALUES ('20150509003731');
 
 INSERT INTO schema_migrations (version) VALUES ('20150509004135');
+
+INSERT INTO schema_migrations (version) VALUES ('20150509005349');
 

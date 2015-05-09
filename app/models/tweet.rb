@@ -1,30 +1,22 @@
 class Tweet < ActiveRecord::Base
   has_many :illusts
   has_many :tweet_values
+  belongs_to :users
 
   def self.create_by_genre(genre)
     (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
       next unless tweet.media?
-      next if Tweet.exists? id: tweet.id
+      next if Tweet.exists? tweet.id
 
       ActiveRecord::Base.transaction do
-        tweet.media.each do |media|
-          next if Illust.exists? media.id
-
-          Illust.create id: media.id,
-            url: media.media_url,
-            tweets_id: tweet.id
-        end
-
-        TweetValue.create tweets_id: tweet.id,
-          favorite_count: tweet.favorite_count,
-          retweet_count: tweet.retweet_count,
-          reply_count: 0
+        Illust.create_from_tweet_if_not_exists tweet
+        TweetValue.create_from_tweet tweet
+        User.create_from_tweet_if_not_exists tweet
 
         Tweet.create id: tweet.id,
           url: tweet.url,
           text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
-          authors_id: tweet.user.id,
+          users_id: tweet.user.id,
           genres_id: genre.id,
           created_at: tweet.created_at
       end
@@ -50,16 +42,13 @@ class Tweet < ActiveRecord::Base
     ActiveRecord::Base.transaction do
       Tweet.update_date tweet.id
 
-      TweetValue.create tweets_id: tweet.id,
-        favorite_count: tweet.favorite_count,
-        retweet_count: tweet.retweet_count,
-        reply_count: 0
+      TweetValue.create_from_tweet tweet
     end
   end
 
   def self.update_values(tweet_ids)
     (Tweet.client.statuses tweet_ids).each do |tweet|
-      next unless Tweet.exists? id: tweet.id
+      next unless Tweet.exists? tweet.id
 
       Tweet.update_value_by_tweet tweet
     end
