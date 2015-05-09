@@ -1,4 +1,5 @@
 class Ranking < ActiveRecord::Base
+  belongs_to :genre
   has_many :tweet_rankings
   has_many :tweets, through: :tweet_rankings
 
@@ -9,12 +10,17 @@ class Ranking < ActiveRecord::Base
 
     Ranking.create ranking_type_id: ranking_type.id,
       genre_id: genre.id,
-      tweets: target_tweets
+      tweets: target_tweets,
+      created_at: date
   end
 
-  def to_json
-    tweets.map do |tweet|
-      tweet.tweet_values
-    end
+  def to_h
+    tweet_hashes = tweets.map {|tweet| tweet.to_h}
+
+    {
+      genre: genre.name,
+      tweets: tweet_hashes,
+      date: created_at
+    }
   end
 end

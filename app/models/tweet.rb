@@ -47,4 +47,19 @@ class Tweet < ActiveRecord::Base
     tweets = AuthedTwitter.client.statuses tweet_ids
     tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
   end
+
+  def to_h
+    value = tweet_values.order('created_at DESC').first
+    score = value.score
+
+    illust_urls = illusts.map {|illust| illust.url}
+
+    {
+      tweet: text,
+      favorite_count: value.favorite_count,
+      retweet_count: value.retweet_count,
+      illust_urls: illust_urls,
+      score: score
+    }.to_json
+  end
 end
