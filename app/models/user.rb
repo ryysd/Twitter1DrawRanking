@@ -1,6 +1,5 @@
 class User < ActiveRecord::Base
-  def self.create_from_tweet_if_not_exists(tweet)
-    user = tweet.user
+  def self.create_from_object(user)
     return if User.exists? user.id
 
     User.create id: user.id,

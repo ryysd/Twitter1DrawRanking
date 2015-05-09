@@ -3,7 +3,7 @@ class TweetValue < ActiveRecord::Base
     TweetValue.where(tweets_id: tweet_id).order("updated_at DESC").first
   end
 
-  def self.create_from_tweet(tweet)
+  def self.create_from_object(tweet)
     TweetValue.create tweets_id: tweet.id,
       favorite_count: tweet.favorite_count,
       retweet_count: tweet.retweet_count,

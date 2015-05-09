@@ -3,19 +3,27 @@ class Tweet < ActiveRecord::Base
   has_many :tweet_values
   belongs_to :users
 
+  def self.create_unless_exists(tweet, genre_id)
+    return if Tweet.exists? tweet.id
+
+    ActiveRecord::Base.transaction do
+      Illust.create_from_objects tweet.media, tweet.id
+      TweetValue.create_from_object tweet
+      User.create_from_object tweet.user
+
+      Tweet.create id: tweet.id,
+        url: tweet.url,
+        text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
+        users_id: tweet.user.id,
+        genres_id: genre_id,
+        created_at: tweet.created_at
+    end
+  end
+
   def self.update_date(id)
     t =Tweet.find id
     t.touch
     t.save
-  end
-
-  def self.value_is_updated?(id, value)
-    latest_value = TweetValue.find_latest_value id
-    return false unless latest_value.nil?
-
-    return latest_value.favorite_count != value.favorite_count ||
-           latest_value.retweet_count != value.retweet_count ||
-           latest_value.reply_count != value.reply_count
   end
 
   def self.update_value_by_tweet(tweet)

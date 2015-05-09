@@ -10,28 +10,15 @@ class Genre < ActiveRecord::Base
     end
   end
 
-  def fetch_query
+  def query
     term = contest_term
     AuthedTwitter.make_query "##{hash_tag}", since_time: term.begin, until_time: term.end
   end
 
   def fetch
-    (AuthedTwitter.client.search fetch_query, locale: "ja", lang: "ja", result_type: 'recent', include_entity: true).map do |tweet|
+    (AuthedTwitter.client.search query, locale: "ja", lang: "ja", result_type: 'recent', include_entity: true).map do |tweet|
       next unless tweet.media?
-      next if Tweet.exists? tweet.id
-
-      ActiveRecord::Base.transaction do
-        Illust.create_from_tweet_if_not_exists tweet
-        TweetValue.create_from_tweet tweet
-        User.create_from_tweet_if_not_exists tweet
-
-        Tweet.create id: tweet.id,
-          url: tweet.url,
-          text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
-          users_id: tweet.user.id,
-          genres_id: id,
-          created_at: tweet.created_at
-      end
+      Tweet.create_unless_exists tweet, id
     end.compact
   end
 end
