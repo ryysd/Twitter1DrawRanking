@@ -20,9 +20,14 @@ class Tweet < ActiveRecord::Base
     end
   end
 
+  def self.update(tweet)
+    (Tweet.find tweet.id).touch # to be fix
+    TweetValue.create_from_object tweet
+  end
+
   def self.update_by_ids(tweet_ids)
     tweets = AuthedTwitter.client.statuses tweet_ids
-    tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
+    tweets.map {|tweet| Tweet.update tweet}.compact
   end
 
   def self.update_by_period(period)
