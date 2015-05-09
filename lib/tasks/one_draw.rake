@@ -15,12 +15,12 @@ namespace :one_draw do
       end
     end
 
-    desc 'update values of tweet in DB'
-    task :update => :environment do
+    desc 'update tweets posted within [since] days'
+    task :update, [:since] => :environment do |t, args|
       logger = Logger.new('log/update.log')
 
       to = Time.now
-      from = Time.now - (60 * 60 * 24)
+      from = Date.today.to_time - (60 * 60 * 24 * args.since.to_i)
 
       logger.info "#{Time.now} -- update start --"
       begin
