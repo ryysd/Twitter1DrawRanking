@@ -1,70 +1,36 @@
 class Tweet < ActiveRecord::Base
-  has_many :illusts
-  has_many :tweet_values
+  has_many :illusts, dependent: :destroy
+  has_many :tweet_values, dependent: :destroy
   belongs_to :users
 
-  def self.create_by_genre(genre)
-    (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
-      next unless tweet.media?
-      next if Tweet.exists? tweet.id
+  def self.create_from_object(tweet, genre_id)
+    return if Tweet.exists? tweet.id
 
-      ActiveRecord::Base.transaction do
-        Illust.create_from_tweet_if_not_exists tweet
-        TweetValue.create_from_tweet tweet
-        User.create_from_tweet_if_not_exists tweet
-
-        Tweet.create id: tweet.id,
-          url: tweet.url,
-          text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
-          users_id: tweet.user.id,
-          genres_id: genre.id,
-          created_at: tweet.created_at
-      end
-    end
-  end
-
-  def self.update_date(id)
-    t =Tweet.find id
-    t.touch
-    t.save
-  end
-
-  def self.value_is_updated?(id, value)
-    latest_value = TweetValue.find_latest_value id
-    return false unless latest_value.nil?
-
-    return latest_value.favorite_count != value.favorite_count ||
-           latest_value.retweet_count != value.retweet_count ||
-           latest_value.reply_count != value.reply_count
-  end
-
-  def self.update_value_by_tweet(tweet)
     ActiveRecord::Base.transaction do
-      Tweet.update_date tweet.id
+      Illust.create_from_objects tweet.media, tweet.id
+      TweetValue.create_from_object tweet
+      User.create_from_object tweet.user
 
-      TweetValue.create_from_tweet tweet
+      Tweet.create id: tweet.id,
+        url: tweet.url,
+        text: (tweet.text.each_char.select{|c| c.bytes.count < 4 }.join ''),
+        users_id: tweet.user.id,
+        genres_id: genre_id,
+        created_at: tweet.created_at
     end
   end
 
-  def self.update_values(tweet_ids)
-    (Tweet.client.statuses tweet_ids).each do |tweet|
-      next unless Tweet.exists? tweet.id
-
-      Tweet.update_value_by_tweet tweet
-    end
+  def self.update_by_ids(tweet_ids)
+    tweets = AuthedTwitter.client.statuses tweet_ids
+    tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
   end
 
-  def self.update_values_by_updated_at(time_range)
-    tweet_ids = ((Tweet.where updated_at: time_range.begin...time_range.end).order 'updated_at ASC').map {|tweet| tweet.id}
-    Tweet.update_values tweet_ids unless tweet_ids.nil?
+  def self.update_by_period(period)
+    tweet_ids = (Tweet.find_by_period period).map {|tweet| tweet.id}
+    Tweet.update_by_ids tweet_ids
   end
 
-  def self.client
-    @@client ||= Twitter::REST::Client.new do |config|
-      config.consumer_key        = Rails.application.secrets.twitter_consumer_key
-      config.consumer_secret     = Rails.application.secrets.twitter_consumer_secret
-      config.access_token        = Rails.application.secrets.twitter_access_token
-      config.access_token_secret = Rails.application.secrets.twitter_access_token_secret
-    end
+  def self.find_by_period(period)
+    (Tweet.where updated_at: period.begin...period.end).order 'updated_at ASC'
   end
 end
