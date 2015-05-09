@@ -24,7 +24,7 @@ namespace :one_draw do
 
       logger.info "#{Time.now} -- update start --"
       begin
-        values = Tweet.update_values_by_updated_at from...to
+        values = Tweet.update_by_period from...to
         logger.info "#{Time.now} -- update end (#{values.size} updated)--"
       rescue => e
         logger.info "#{Time.now} -- update error (#{e})--"

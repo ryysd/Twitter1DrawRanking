@@ -3,7 +3,7 @@ class Illust < ActiveRecord::Base
     medias.each do |media|
       next if Illust.exists? media.id
 
-      Illust.create id: media.id,
+      Illust.create! id: media.id,
         url: media.media_url,
         tweets_id: tweet_id
     end

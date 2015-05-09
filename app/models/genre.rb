@@ -18,7 +18,7 @@ class Genre < ActiveRecord::Base
   def fetch
     (AuthedTwitter.client.search query, locale: "ja", lang: "ja", result_type: 'recent', include_entity: true).map do |tweet|
       next unless tweet.media?
-      Tweet.create_unless_exists tweet, id
+      Tweet.create_from_object tweet, id
     end.compact
   end
 end
