@@ -28,6 +28,7 @@ CREATE TABLE `genres` (
   `hash_tag` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `start_time` time NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -159,7 +160,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-09 12:40:12
+-- Dump completed on 2015-05-09 14:00:50
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -199,4 +200,8 @@ INSERT INTO schema_migrations (version) VALUES ('20150509003731');
 INSERT INTO schema_migrations (version) VALUES ('20150509004135');
 
 INSERT INTO schema_migrations (version) VALUES ('20150509005349');
+
+INSERT INTO schema_migrations (version) VALUES ('20150509045705');
+
+INSERT INTO schema_migrations (version) VALUES ('20150509045955');
 

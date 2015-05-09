@@ -8,7 +8,7 @@ namespace :one_draw do
 
       logger.info "#{Time.now} -- #{genre.hash_tag} fetch start --"
       begin
-        tweets = Tweet.fetch_by_genre genre
+        tweets = Tweet.fetch genre
         logger.info "#{Time.now} -- #{genre.hash_tag} fetch end (#{tweets.size} fetched)--"
       rescue => e
         logger.info "#{Time.now} -- #{genre.hash_tag} fetch error (#{e}) --"

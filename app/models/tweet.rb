@@ -3,8 +3,24 @@ class Tweet < ActiveRecord::Base
   has_many :tweet_values
   belongs_to :users
 
-  def self.fetch_by_genre(genre)
-    (Tweet.client.search "##{genre.hash_tag} -rt", locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
+  def self.make_fetch_query(keyword, since_time: nil, until_time: nil)
+    query = "#{keyword}"
+    query += " since:#{since_time.strftime('%Y-%m-%d_%H:%M:%S_JST')}" unless since_time.nil?
+    query += " until:#{until_time.strftime('%Y-%m-%d_%H:%M:%S_JST')}" unless until_time.nil?
+    query += " -rt"
+  end
+
+  def self.make_fetch_query_by_genre(genre)
+    keyword = "##{genre.hash_tag}"
+    contest_term = genre.contest_term
+
+    Tweet.make_fetch_query keyword, since_time: contest_term.begin, until_time: contest_term.end
+  end
+
+  def self.fetch(genre)
+    query = Tweet.make_fetch_query_by_genre genre
+
+    (Tweet.client.search query, locale: "ja", lang: "ja", result_type: "recent", :include_entity => true).map do |tweet|
       next unless tweet.media?
       next if Tweet.exists? tweet.id
 

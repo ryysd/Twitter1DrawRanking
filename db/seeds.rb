@@ -7,9 +7,9 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-Genre.create id: 1, name: '艦これ', hash_tag: '艦これ版深夜の真剣お絵描き60分一本勝負'
-Genre.create id: 2, name: 'わんどろ', hash_tag: '深夜の真剣お絵描き60分一本勝負'
+Genre.create id: 1, name: '艦これ', hash_tag: '艦これ版深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
+Genre.create id: 2, name: 'わんどろ', hash_tag: '深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
 
 RankingType.create id: 1, name: 'hourly'
 RankingType.create id: 2, name: 'daily'
-RankingType.create id: 3, name: 'monthly'
+RankingType.create id: 3, name: 'weekly'
