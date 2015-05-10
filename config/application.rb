@@ -26,5 +26,9 @@ module Twitter1DrawRanking
     config.active_record.schema_format = :sql
 
     config.autoload_paths += %W(#{config.root}/lib)
+
+    config.generators do |g|
+      g.template_engine :slim
+    end
   end
 end
