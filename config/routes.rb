@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  get 'genres/:genre_id/rankings/daily/:date/' => 'rankings#daily'
+  namespace :api, { format: 'json' } do
+    get 'rankings/:date/genres/:genre_id' => 'rankings#daily'
+  end
 
   get 'genres/:genre_id/tweets/debug-update' => 'tweets#debug_update'
   get 'tweets/:tweet_id/debug-update-value' => 'tweets#debug_update_value'
