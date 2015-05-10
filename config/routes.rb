@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'genres/:genre_id/rankings/daily/:date/' => 'rankings#daily'
+
   get 'genres/:genre_id/tweets/debug-update' => 'tweets#debug_update'
   get 'tweets/:tweet_id/debug-update-value' => 'tweets#debug_update_value'
   get 'tweets/:from/:to/debug-update-values' => 'tweets#debug_update_values_by_updated_at'

@@ -97,6 +97,23 @@ CREATE TABLE `schema_migrations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `tweet_rankings`
+--
+
+DROP TABLE IF EXISTS `tweet_rankings`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `tweet_rankings` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `ranking_id` int(11) NOT NULL,
+  `tweet_id` bigint(20) NOT NULL,
+  `created_at` datetime NOT NULL,
+  `updated_at` datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `tweet_values`
 --
 
@@ -112,7 +129,7 @@ CREATE TABLE `tweet_values` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3895 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5284 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -160,7 +177,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-09 18:31:54
+-- Dump completed on 2015-05-09 21:57:27
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -206,4 +223,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150509045705');
 INSERT INTO schema_migrations (version) VALUES ('20150509045955');
 
 INSERT INTO schema_migrations (version) VALUES ('20150509092625');
+
+INSERT INTO schema_migrations (version) VALUES ('20150509125647');
 
