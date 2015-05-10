@@ -56,3 +56,6 @@ group :development, :test do
   gem 'pry-stack_explorer'
 end
 
+gem 'browserify-rails', '0.5'
+gem 'less-rails'
+gem 'therubyracer', platforms: :ruby

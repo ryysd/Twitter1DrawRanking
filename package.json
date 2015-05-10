@@ -1,0 +1,16 @@
+{
+  "name": "1draw-ranking",
+  "devDependencies": {
+    "browserify": "~> 6.3",
+    "reactify": "^1.1.0"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "dependencies": {
+    "material-ui": "^0.7.5",
+    "react": "^0.13.3",
+    "react-tap-event-plugin": "^0.1.6"
+  }
+}
