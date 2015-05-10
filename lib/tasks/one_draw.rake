@@ -31,9 +31,6 @@ namespace :one_draw do
       end
     end
 
-    task fetch_and_update: :environment do
-    end
-
     desc ''
     task update_and_fetch: :environment do
       Rake::Task["one_draw:illust:update"].invoke 2

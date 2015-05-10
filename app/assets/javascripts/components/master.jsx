@@ -1,5 +1,3 @@
-console.log("read");
-
 var Router = require('react-router'); 
 var RouteHandler = Router.RouteHandler;
 
@@ -14,6 +12,7 @@ var Master = React.createClass({
         <div>
           <AppBar/>
           <DatePicker hintText="Portrait Dialog"/>
+          <RaisedButton label="aaaaaaa"/>
           <RouteHandler/>
         </div>
     );

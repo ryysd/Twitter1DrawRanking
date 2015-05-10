@@ -17,13 +17,13 @@ class Ranking < ActiveRecord::Base
       created_at: date
   end
 
-  def to_h
+  def to_json
     tweet_hashes = tweets.map {|tweet| tweet.to_h}
 
-    {
-      genre: genre.name,
-      tweets: tweet_hashes,
-      date: created_at
-    }
+    Jbuilder.encode do |json|
+      json.genre genre.name
+      json.tweets tweet_hashes
+      json.date created_at
+    end
   end
 end

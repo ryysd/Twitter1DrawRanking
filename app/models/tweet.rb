@@ -60,6 +60,6 @@ class Tweet < ActiveRecord::Base
       retweet_count: value.retweet_count,
       illust_urls: illust_urls,
       score: score
-    }.to_json
+    }
   end
 end
