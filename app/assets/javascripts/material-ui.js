@@ -1,6 +1,10 @@
 var React = require('react');
+var injectTapEventPlugin = require("react-tap-event-plugin");
+injectTapEventPlugin();
+
 var mui = require('material-ui');
 var RaisedButton = mui.RaisedButton;
+var DatePicker = mui.DatePicker;
 var AppBar = mui.AppBar;
 
 var Router = require('react-router'); 
@@ -14,6 +18,10 @@ var App = React.createClass({
     return (
         <div>
           <AppBar/>
+          <DatePicker hintText="Portrait Dialog"/>
+          <DatePicker
+            hintText="Landscape Dialog"
+              mode="landscape"/>
           <RouteHandler/>
         </div>
     );
