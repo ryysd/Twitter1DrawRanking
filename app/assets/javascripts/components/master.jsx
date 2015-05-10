@@ -1,3 +1,5 @@
+console.log("read");
+
 var Router = require('react-router'); 
 var RouteHandler = Router.RouteHandler;
 
