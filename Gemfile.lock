@@ -63,6 +63,9 @@ GEM
       multipart-post (>= 1.2, < 3)
     globalid (0.3.5)
       activesupport (>= 4.1.0)
+    hpricot (0.8.6)
+    html2slim (0.2.0)
+      hpricot
     http (0.6.4)
       http_parser.rb (~> 0.6.0)
     http_parser.rb (0.6.0)
@@ -208,6 +211,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
+  html2slim
   jbuilder (~> 2.0)
   jquery-rails
   mysql2

@@ -16,6 +16,7 @@ gem 'coffee-rails', '~> 4.1.0'
 
 gem 'slim-rails'
 gem 'react-rails', '~> 1.0'
+gem 'html2slim'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
