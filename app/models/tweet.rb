@@ -45,6 +45,7 @@ class Tweet < ActiveRecord::Base
 
   def self.update_by_ids(tweet_ids)
     tweets = AuthedTwitter.client.statuses tweet_ids
+    return [] if tweets.nil?
     tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
   end
 
