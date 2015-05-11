@@ -31,7 +31,7 @@ module Twitter1DrawRanking
       g.template_engine :slim
     end
 
-    config.browserify_rails.commandline_options = ["-t reactify"]
+    # config.browserify_rails.commandline_options = ["-t reactify"]
     config.less.paths << "#{Rails.root}/node_modules/material-ui/src/less/"
   end
 end
