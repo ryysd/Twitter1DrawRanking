@@ -12,7 +12,7 @@ var CategoryRanking = require('./components/ranking/category-ranking.jsx');
 var AppRoutes = (
   <Route name="app" path="/" handler={Master}>
     <DefaultRoute handler={TotalRanking}/>
-    <Route name="category-ranking" path="/rankings/:category_id" handler={CategoryRanking} />
+    <Route name="category-ranking" path="/rankings/:date/categories/:category_id" handler={CategoryRanking} />
   </Route>
 );
 
