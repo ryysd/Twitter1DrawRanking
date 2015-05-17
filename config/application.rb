@@ -33,5 +33,9 @@ module Twitter1DrawRanking
 
     # config.browserify_rails.commandline_options = ["-t reactify"]
     config.less.paths << "#{Rails.root}/node_modules/material-ui/src/less/"
+
+    Bullet.enable  = true
+    Bullet.console = true
+    Bullet.raise = true;
   end
 end
