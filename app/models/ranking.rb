@@ -18,7 +18,7 @@ class Ranking < ActiveRecord::Base
   end
 
   def to_json
-    tweet_hashes = tweets.map {|tweet| tweet.to_h}
+    tweet_hashes = (tweets.includes [:illusts, :tweet_values]).map {|tweet| tweet.to_h}
 
     Jbuilder.encode do |json|
       json.genre genre.name
