@@ -45,6 +45,7 @@ class Tweet < ActiveRecord::Base
 
   def self.update_by_ids(tweet_ids)
     tweets = AuthedTwitter.client.statuses tweet_ids
+    return [] if tweets.nil?
     tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
   end
 
@@ -60,6 +61,6 @@ class Tweet < ActiveRecord::Base
       retweet_count: value.retweet_count,
       illust_urls: illust_urls,
       score: score
-    }.to_json
+    }
   end
 end

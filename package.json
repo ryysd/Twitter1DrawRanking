@@ -1,0 +1,24 @@
+{
+  "name": "1draw-ranking",
+  "devDependencies": {
+    "browserify": "~> 6.3",
+    "reactify": "^1.1.0",
+    "watchify": "^3.2.1"
+  },
+  "license": "MIT",
+  "engines": {
+    "node": ">= 0.10"
+  },
+  "dependencies": {
+    "material-ui": "^0.7.5",
+    "object-assign": "^2.0.0",
+    "react": "^0.13.3",
+    "react-router": "^0.13.3",
+    "react-tap-event-plugin": "^0.1.6"
+  },
+  "scripts": {
+    "bundle": "browserify -t reactify app/assets/javascripts/app.jsx > app/assets/javascripts/bundle.js",
+    "watch-js": "watchify -t reactify app/assets/javascripts/app.jsx -o app/assets/javascripts/bundle.js -v",
+    "start": "npm run watch-js & bundle exec rails s"
+  }
+}

@@ -25,3 +25,7 @@ doc/
 
 /config/database.yml
 /db_design
+
+node_modules
+
+npm-debug.log

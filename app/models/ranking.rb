@@ -8,7 +8,7 @@ class Ranking < ActiveRecord::Base
 
   def self.create_daily(genre, date)
     term = genre.contest_term date
-    target_tweets = Tweet.by_created_at term
+    target_tweets = (Tweet.by_created_at term).by_genre_id genre.id
     ranking_type = RankingType.daily
 
     Ranking.create ranking_type_id: ranking_type.id,
@@ -17,13 +17,13 @@ class Ranking < ActiveRecord::Base
       created_at: date
   end
 
-  def to_h
+  def to_json
     tweet_hashes = tweets.map {|tweet| tweet.to_h}
 
-    {
-      genre: genre.name,
-      tweets: tweet_hashes,
-      date: created_at
-    }
+    Jbuilder.encode do |json|
+      json.genre genre.name
+      json.tweets tweet_hashes
+      json.date created_at
+    end
   end
 end
