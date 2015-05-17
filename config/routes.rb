@@ -1,4 +1,13 @@
 Rails.application.routes.draw do
+  namespace :api, {format: 'json'} do
+    get 'rankings/:date/genres/:genre_id' => 'rankings#daily'
+  end
+
+  root to: 'rankings#show'
+
+  get 'genres/:genre_id/tweets/debug-update' => 'tweets#debug_update'
+  get 'tweets/:tweet_id/debug-update-value' => 'tweets#debug_update_value'
+  get 'tweets/:from/:to/debug-update-values' => 'tweets#debug_update_values_by_updated_at'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

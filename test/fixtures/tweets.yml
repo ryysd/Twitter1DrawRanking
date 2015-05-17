@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  url: MyString
+  favorite_count: 1
+  retweet_count: 1
+  reply_count: 1
+  authors_id: 1
+  genres_id: 1
+
+two:
+  url: MyString
+  favorite_count: 1
+  retweet_count: 1
+  reply_count: 1
+  authors_id: 1
+  genres_id: 1

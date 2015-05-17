@@ -1,0 +1,2 @@
+class IllustsController < ApplicationController
+end
