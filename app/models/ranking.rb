@@ -8,7 +8,7 @@ class Ranking < ActiveRecord::Base
 
   def self.create_daily(genre, date)
     term = genre.contest_term date
-    target_tweets = Tweet.by_created_at term
+    target_tweets = (Tweet.by_created_at term).by_genre_id genre.id
     ranking_type = RankingType.daily
 
     Ranking.create ranking_type_id: ranking_type.id,
