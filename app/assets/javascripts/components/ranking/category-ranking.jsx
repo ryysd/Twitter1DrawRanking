@@ -19,7 +19,7 @@ var CategoryRanking = React.createClass({
   },
 
   render: function() {
-    return (<ImageGrid urls={this.state.data} />);
+    return (<ImageGrid urls={this.state.data} col_num={3} margin={1}/>);
   }
 });
 
