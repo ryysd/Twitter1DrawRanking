@@ -3,7 +3,7 @@ Rails.application.routes.draw do
     get 'rankings/:date/genres/:genre_id' => 'rankings#daily'
   end
 
-  root to: 'rankings#show_daily'
+  root to: 'rankings#show'
 
   get 'genres/:genre_id/tweets/debug-update' => 'tweets#debug_update'
   get 'tweets/:tweet_id/debug-update-value' => 'tweets#debug_update_value'

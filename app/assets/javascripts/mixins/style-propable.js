@@ -17,6 +17,7 @@ module.exports = {
     for (var i = 1; i < args.length; i++) {
       if (args[i]) base = Extend(base, args[i]);
     }
+    
     return base;
   }
 }

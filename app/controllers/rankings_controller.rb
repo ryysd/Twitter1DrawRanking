@@ -1,4 +1,4 @@
 class RankingsController < ApplicationController
-  def show_daily
+  def show
   end
 end
