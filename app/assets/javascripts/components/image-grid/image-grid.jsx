@@ -1,9 +1,10 @@
-var ThumbnailImage = require('./thumbnail-image.jsx');
+var TwitterImage = require('./twitter-image.jsx');
 
 var mui = require('material-ui');
 
 var ImageGrid = React.createClass({
   propTypes: {
+    tweets: React.PropTypes.array.isRequired,
     col_num:  React.PropTypes.number.isRequired,
     margin: React.PropTypes.number.isRequired
   },
@@ -11,8 +12,8 @@ var ImageGrid = React.createClass({
   render: function() {
     return ( 
     <div>
-      {this.props.urls.map(function(url, idx) {
-        return <ThumbnailImage key={idx} url={url} size={this.calcSize()} margin={this.props.margin}/>
+      {this.props.tweets.map(function(tweet, idx) {
+        return <TwitterImage key={idx} tweet={tweet} size={this.calcSize()} margin={this.props.margin}/>
       }.bind(this))}
     </div>
     );
