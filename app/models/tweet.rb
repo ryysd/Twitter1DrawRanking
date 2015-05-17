@@ -52,7 +52,7 @@ class Tweet < ActiveRecord::Base
   def to_h
     # do not use ORDER_BY to avoid N+1 loading
     # value = tweet_values.order('created_at DESC').first
-    value = tweet_values.sort_by{|val| val.created_at}.first
+    value = tweet_values.sort_by{|val| val.created_at}.last
     score = value.score
 
     illust_urls = illusts.map {|illust| illust.url}
