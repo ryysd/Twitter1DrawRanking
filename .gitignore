@@ -27,3 +27,5 @@ doc/
 /db_design
 
 node_modules
+
+npm-debug.log
