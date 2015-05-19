@@ -23,6 +23,7 @@ class Tweet < ActiveRecord::Base
   def self.fetch_by_stream(target_users)
     begin
       AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
+        next unless tweet.instance_of? Twitter::Tweet
         next unless tweet.media?
 
         genre = tweet.hashtags.map {|hash_tag| Genre.find_by_hash_tag hash_tag.text}.compact.first
