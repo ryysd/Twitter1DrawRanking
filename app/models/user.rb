@@ -27,6 +27,7 @@ class User < ActiveRecord::Base
       begin
         (AuthedTwitter.client.friends ids).each {|user| User.create_from_object user}
       rescue Twitter::Error::TooManyRequests => e
+        pp "sleep #{e.rate_limit.reset_in + 1} sec"
         sleep e.rate_limit.reset_in + 1
         retry
       end

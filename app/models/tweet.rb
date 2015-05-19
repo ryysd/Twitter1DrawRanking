@@ -21,14 +21,21 @@ class Tweet < ActiveRecord::Base
   end
 
   def self.fetch_by_stream(target_users)
-    genre = Genre.find_by_alias 'original'
     begin
       AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
         next unless tweet.media?
-        Tweet.create_from_object tweet, genre.id
+
+        genre = tweet.hashtags.map {|hash_tag| Genre.find_by_hash_tag hash_tag.text}.compact.first
+        genre = Genre.find_by_alias 'original' if genre.nil?
+
+        if tweet.retweet?
+          Tweet.create_from_object tweet.retweeted_status, genre.id
+        else
+          Tweet.create_from_object tweet, genre.id
+        end
       end
-    rescue Twitter::Error::TooManyRequests => e
-      pp e.rate_limit
+    rescue => e
+      pp e
     end
   end
 
