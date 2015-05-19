@@ -170,6 +170,7 @@ CREATE TABLE `users` (
   `pixiv_id` int(11) DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `checked_date` date DEFAULT NULL,
+  `tumblr_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -183,7 +184,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-19 21:50:24
+-- Dump completed on 2015-05-19 22:56:11
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -235,4 +236,6 @@ INSERT INTO schema_migrations (version) VALUES ('20150509125647');
 INSERT INTO schema_migrations (version) VALUES ('20150510135049');
 
 INSERT INTO schema_migrations (version) VALUES ('20150519123948');
+
+INSERT INTO schema_migrations (version) VALUES ('20150519135556');
 
