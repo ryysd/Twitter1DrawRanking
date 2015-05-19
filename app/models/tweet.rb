@@ -22,9 +22,13 @@ class Tweet < ActiveRecord::Base
 
   def self.fetch_by_stream(target_users)
     genre = Genre.find_by_alias 'original'
-    AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
-      next unless tweet.media?
-      Tweet.create_from_object tweet, genre.id
+    begin
+      AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
+        next unless tweet.media?
+        Tweet.create_from_object tweet, genre.id
+      end
+    rescue Twitter::Error::TooManyRequests => e
+      pp e.rate_limit
     end
   end
 
