@@ -20,6 +20,14 @@ class Tweet < ActiveRecord::Base
     end.compact
   end
 
+  def self.fetch_by_stream(target_users)
+    genre = Genre.find_by_alias 'original'
+    AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
+      next unless tweet.media?
+      Tweet.create_from_object tweet, genre.id
+    end
+  end
+
   def self.create_from_object(tweet, genre_id)
     return if Tweet.exists? tweet.id
 
