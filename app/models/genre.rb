@@ -1,4 +1,8 @@
 class Genre < ActiveRecord::Base
+  def self.find_by_hash_tags(hash_tags)
+    hash_tags.map {|hash_tag| Genre.find_by_hash_tag hash_tag.text}.compact.first
+  end
+
   def contest_start_time(date)
     date.to_time + (60 * 60 * start_time.hour)
   end

@@ -4,6 +4,9 @@ class Tweet < ActiveRecord::Base
   has_many :tweet_rankings
   belongs_to :users
 
+  UPDATE_INTERVAL_MINUTE = 15
+  UPDATE_INTERVAL_SEC = UPDATE_INTERVAL_MINUTE * 60
+
   scope :by_genre_id, ->(genre_id) {where(genre_id: genre_id)}
   scope :by_updated_at, ->(updated_at) {where(updated_at: updated_at)}
   scope :by_created_at, ->(created_at) {where(created_at: created_at)}
@@ -21,27 +24,26 @@ class Tweet < ActiveRecord::Base
   end
 
   def self.fetch_by_stream(target_users)
-    begin
-      AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
-        next unless tweet.instance_of? Twitter::Tweet
-        next unless tweet.media?
+    AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
+      next if (!tweet.instance_of? Twitter::Tweet) || !tweet.media?
 
-        genre = tweet.hashtags.map {|hash_tag| Genre.find_by_hash_tag hash_tag.text}.compact.first
-        genre = Genre.find_by_alias 'original' if genre.nil?
+      genre = (Genre.find_by_hash_tags tweet.hashtags) || (Genre.find_by_alias 'original')
 
-        # save user if author is not in DB
+      origin_tweet = tweet.retweet? ? tweet.retweeted_status : tweet
+      existing_tweet = Tweet.find_by_id origin_tweet.id
 
-        origin_tweet = tweet.retweet? ? tweet.retweeted_status : tweet
-        begin
-          Tweet.create_from_object origin_tweet, genre.id
-        rescue
-          pp e
-          logger.error e
-        end
+      unless existing_tweet.nil?
+        update_by_object origin_tweet if existing_tweet.updatable?
+        next
       end
-    rescue => e
-      pp e
-      logger.error e
+
+      begin
+        User.create_from_object origin_tweet.user
+        Tweet.create_from_object origin_tweet, genre.id
+      rescue => e
+        pp e
+        logger.error e
+      end
     end
   end
 
@@ -68,10 +70,18 @@ class Tweet < ActiveRecord::Base
     Tweet.update_by_ids tweet_ids
   end
 
+  def self.update_by_object(tweet)
+    TweetValue.create_from_object tweet
+  end
+
   def self.update_by_ids(tweet_ids)
     tweets = AuthedTwitter.client.statuses tweet_ids
     return [] if tweets.nil?
     tweets.map {|tweet| TweetValue.create_from_object tweet}.compact
+  end
+
+  def updatable?
+    (Time.now - updated_at.to_time) > UPDATE_INTERVAL_SEC
   end
 
   def to_h
