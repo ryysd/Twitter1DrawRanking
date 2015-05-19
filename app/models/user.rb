@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
 
   def self.get_pixiv_url_from_object(user)
     urls = user.description_urls.map do |url|
-      [url.url, url.display_url, url.expanded_url].map {|u| expand_url u.to_s}
+      [url.url, url.expanded_url].map {|u| expand_url u.to_s}
     end
 
     p urls
