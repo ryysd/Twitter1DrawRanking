@@ -7,9 +7,10 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-Genre.create id: 1, name: '艦これ', alias: 'kancolle', hash_tag: '艦これ版深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
-Genre.create id: 2, name: '東方', alias: 'toho', hash_tag: '深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
-Genre.create id: 3, name: '背景', alias: 'background', hash_tag: '背景版深夜の真剣お絵描き60分一本勝負', start_time: '23:00:00'
+Genre.create id: 1, name: 'オリジナル', alias: 'original', hash_tag: '', start_time: '00:00:00'
+Genre.create id: 2, name: '艦これ', alias: 'kancolle', hash_tag: '艦これ版深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
+Genre.create id: 3, name: '東方', alias: 'toho', hash_tag: '深夜の真剣お絵描き60分一本勝負', start_time: '22:00:00'
+Genre.create id: 4, name: '背景', alias: 'background', hash_tag: '背景版深夜の真剣お絵描き60分一本勝負', start_time: '23:00:00'
 
 RankingType.create id: 1, name: 'hourly'
 RankingType.create id: 2, name: 'daily'
