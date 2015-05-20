@@ -30,7 +30,7 @@ class Tweet < ActiveRecord::Base
   # @param [Array<Twitter::User>] 対象ユーザ
   def self.fetch_by_stream(target_users)
     AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
-      next if valid_media? tweet
+      next if media? tweet
 
       genre = (Genre.find_by_hash_tags tweet.hashtags) || (Genre.find_by_alias 'original')
 
@@ -46,7 +46,7 @@ class Tweet < ActiveRecord::Base
   end
 
   # 指定したTwitter::Tweetオブジェクトが画像を持っているかを確認
-  def self.valid_media?(tweet)
+  def self.media?(tweet)
     (tweet.instance_of? Twitter::Tweet) && tweet.media?
   end
 
@@ -80,7 +80,7 @@ class Tweet < ActiveRecord::Base
   end
 
   # Twitter::TweetオブジェクトからTweet Model、User Modelを作成・保存
-  def create_from_object_with_user(tweet, genre_id)
+  def self.create_from_object_with_user(tweet, genre_id)
     User.create_from_object tweet.user
     Tweet.create_from_object tweet, genre_id
   end
@@ -109,14 +109,21 @@ class Tweet < ActiveRecord::Base
     (Time.zone.now - updated_at.to_time) > UPDATE_INTERVAL_SEC
   end
 
+  # 有効な画像を持っているか確認
+  # (リツイート数の方がファボ数より多い場合、通常のイラストでは無い可能性が大きい)
+  def valid_media?
+    # do not use ORDER_BY to avoid N+1 loading
+    value = tweet_values.sort_by(&:created_at).last
+    value.favorite_count > value.retweet_count
+  end
+
   # ハッシュに変換
   def to_h
     # do not use ORDER_BY to avoid N+1 loading
-    # value = tweet_values.order('created_at DESC').first
     value = tweet_values.sort_by(&:created_at).last
     score = value.score
 
-    illust_urls = illusts.map(&:illust.url)
+    illust_urls = illusts.map(&:url)
 
     {
       tweet: text,
