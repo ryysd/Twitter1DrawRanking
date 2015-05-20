@@ -1,12 +1,12 @@
-require 'expand_url'
+require 'media_url'
 
 class User < ActiveRecord::Base
   def self.create_from_object(user)
     return if User.exists? user.id
 
     urls = get_urls_from_object user
-    pixiv_id = (get_pixiv_id_from_urls urls) || (get_pixiv_id_from_description user.description)
-    tumblr_id = get_tumblr_id_from_urls urls
+    pixiv_id = (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
+    tumblr_id = MediaUrl.get_tumblr_id_from_urls urls
 
     User.create! id: user.id,
       name: user.name,
@@ -34,45 +34,12 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.get_pixiv_id_from_urls(urls)
-    id = urls.map {|url| get_pixiv_id_from_url url}.compact.uniq.first
-  end
-
-  def self.get_tumblr_id_from_urls(urls)
-    id = urls.map {|url| get_tumblr_id_from_url url}.compact.uniq.first
-  end
-
-  def self.get_pixiv_id_from_description(description)
-    reg = /pixiv\D*(?<id>[0-9]+)/
-    result = reg.match description
-
-    result[:id] unless result.nil?
-  end
-
   def self.get_urls_from_object(user)
     desc_urls = user.description_urls.map {|url| url.expanded_url}
     web_urls = user.website_urls.map {|url| url.expanded_url}
 
     (desc_urls + web_urls).map(&:to_s).map do |url| 
-      (User.is_short_url url) ? (expand_url url) : url
+      (MediaUrl.is_short_url url) ? (MediaUrl.expand_url url) : url
     end.flatten.uniq
-  end
-
-  def self.is_short_url(url)
-    !((url.include? 'www') || (url.include? '.com') || (url.include? 'pixiv') || (url.include? 'tumblr'))
-  end
-
-  def self.get_pixiv_id_from_url(pixiv_url)
-    reg = /https?:\/\/www.pixiv.net\/member\.php\?id=(?<id>[0-9]+)/
-    result = reg.match pixiv_url
-
-    result[:id] unless result.nil?
-  end
-
-  def self.get_tumblr_id_from_url(tumblr_url)
-    reg = /http:\/\/(?<id>\w+).tumblr.com/
-    result = reg.match tumblr_url
-
-    result[:id] unless result.nil?
   end
 end
