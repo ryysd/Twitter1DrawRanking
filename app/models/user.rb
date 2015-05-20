@@ -32,7 +32,14 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update
+  def update_pixiv_id_by_object(user)
+    urls = User.get_urls_from_object user
+    pixiv_id = (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
+
+    update_attributes pixiv_id: pixiv_id unless pixiv_id.nil?
+  end
+
+  def update_reliability
     following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
 
     update_attributes follow_count: following_user_ids.to_a.size,
@@ -61,7 +68,7 @@ class User < ActiveRecord::Base
     web_urls = user.website_urls.map {|url| url.expanded_url}
 
     (desc_urls + web_urls).map(&:to_s).map do |url| 
-      (MediaUrl.is_short_url url) ? (MediaUrl.expand_url url) : url
+      (MediaUrl.short_url? url) ? (MediaUrl.expand_url url) : url
     end.flatten.uniq
   end
 end
