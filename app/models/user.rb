@@ -1,6 +1,10 @@
 require 'media_url'
+require 'retriable'
 
 class User < ActiveRecord::Base
+  extend Retriable
+  include Retriable
+
   def self.create_from_object(user)
     return if User.exists? user.id
 
@@ -13,25 +17,43 @@ class User < ActiveRecord::Base
       icon_url: user.profile_image_url,
       description: user.description,
       followers_count: user.followers_count,
-      follow_count: follow_count,
+      follow_count: 0,
       pixiv_id: pixiv_id,
       tumblr_id: tumblr_id,
       checked_date: nil
   end
 
   def self.create_following_users(user)
-    following_user_ids = AuthedTwitter.client.friend_ids user.id
-    following_user_ids.each_slice(100).to_a
+    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids user.id }
+    sliced_ids = following_user_ids.each_slice(100).to_a
 
-    following_user_ids.each do |ids|
-      begin
-        (AuthedTwitter.client.friends ids).each {|user| User.create_from_object user}
-      rescue Twitter::Error::TooManyRequests => e
-        pp "sleep #{e.rate_limit.reset_in + 1} sec"
-        sleep e.rate_limit.reset_in + 1
-        retry
-      end
+    sliced_ids.each do |ids|
+      do_retriable { (AuthedTwitter.client.friends ids).each { |u| User.create_from_object u } }
     end
+  end
+
+  def update
+    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
+
+    update_attributes follow_count: following_user_ids.to_a.size,
+      reliability: (calc_reliability following_user_ids)
+  end
+
+  def calc_reliability(following_user_ids)
+    return 100 unless pixiv_id.nil?
+    base =  !tumblr_id.nil? ? 50 : 0
+
+    rel = base + (calc_known_unknown_ratio following_user_ids)
+
+    rel < 100 ? rel : 100
+  end
+
+  def calc_known_unknown_ratio(following_user_ids)
+    known_users = User.where id: following_user_ids.to_a
+
+    pp known_users.to_a.size
+    pp following_user_ids.to_a.size
+    known_users.size * 100 / following_user_ids.to_a.size
   end
 
   def self.get_urls_from_object(user)
