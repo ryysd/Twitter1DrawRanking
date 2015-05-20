@@ -48,11 +48,9 @@ class User < ActiveRecord::Base
 
   def calc_reliability(following_user_ids)
     return 100 unless pixiv_id.nil?
-    base =  !tumblr_id.nil? ? 50 : 0
+    return 0 if following_user_ids.to_a.empty?
 
-    rel = base + (calc_known_unknown_ratio following_user_ids)
-
-    rel < 100 ? rel : 100
+    calc_known_unknown_ratio following_user_ids
   end
 
   def calc_known_unknown_ratio(following_user_ids)
