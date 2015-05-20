@@ -3,7 +3,7 @@ class Genre < ActiveRecord::Base
   # @param [Array<String>] hash_tags 検索を行いたいハッシュタグの配列
   # @return [Genre]
   def self.find_by_hash_tags(hash_tags)
-    hash_tags.map {|hash_tag| Genre.find_by_hash_tag hash_tag.text}.compact.first
+    hash_tags.map { |hash_tag| Genre.find_by_hash_tag hash_tag.text }.compact.first
   end
 
   # 指定した日の集計開始時間を取得
@@ -19,7 +19,7 @@ class Genre < ActiveRecord::Base
     one_day_sec = 60 * 60 * 24
     today_contest_start_time = contest_start_time Date.today
 
-    if Time.now < today_contest_start_time
+    if Time.zone.now < today_contest_start_time
       (today_contest_start_time - one_day_sec)...today_contest_start_time 
     else
       today_contest_start_time...(today_contest_start_time + one_day_sec)
