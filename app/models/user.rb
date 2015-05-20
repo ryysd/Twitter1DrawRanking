@@ -13,7 +13,7 @@ class User < ActiveRecord::Base
       icon_url: user.profile_image_url,
       description: user.description,
       followers_count: user.followers_count,
-      follow_count: 0,
+      follow_count: follow_count,
       pixiv_id: pixiv_id,
       tumblr_id: tumblr_id,
       checked_date: nil
