@@ -3,6 +3,8 @@ class Ranking < ActiveRecord::Base
   has_many :tweet_rankings
   has_many :tweets, through: :tweet_rankings
 
+  MAX_TWEET_NUM = 100
+
   scope :by_created_at, ->(created_at) {where(created_at: created_at)}
   scope :by_genre_id, ->(genre_id) {where(genre_id: genre_id)}
 

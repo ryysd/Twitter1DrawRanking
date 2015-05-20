@@ -30,7 +30,9 @@ var TwitterImage = React.createClass({
 
     return (
       <div style={this.styles.root}>
-        <ThumbnailImage url={this.props.tweet.illust_urls[0]} size={this.props.size} margin={this.props.margin} />
+        <a href={"https://twitter.com/tweets/status/" +  this.props.tweet.id}>
+          <ThumbnailImage url={this.props.tweet.illust_urls[0]} size={this.props.size} margin={this.props.margin} />
+        </a>
         <TwitterInfoBar style={{position: 'absolute', background: 'white', bottom: '0px'}} tweet={this.props.tweet} />
       </div>
     );

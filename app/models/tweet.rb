@@ -109,23 +109,27 @@ class Tweet < ActiveRecord::Base
     (Time.zone.now - updated_at.to_time) > UPDATE_INTERVAL_SEC
   end
 
+  def latest_value
+    # do not use ORDER_BY to avoid N+1 loading
+    tweet_values.sort_by(&:created_at).last
+  end
+
   # 有効な画像を持っているか確認
   # (リツイート数の方がファボ数より多い場合、通常のイラストでは無い可能性が大きい)
   def valid_media?
-    # do not use ORDER_BY to avoid N+1 loading
-    value = tweet_values.sort_by(&:created_at).last
+    value = latest_value
     value.favorite_count > value.retweet_count
   end
 
   # ハッシュに変換
   def to_h
-    # do not use ORDER_BY to avoid N+1 loading
-    value = tweet_values.sort_by(&:created_at).last
+    value = latest_value
     score = value.score
 
     illust_urls = illusts.map(&:url)
 
     {
+      id: id.to_s,
       tweet: text,
       favorite_count: value.favorite_count,
       retweet_count: value.retweet_count,
