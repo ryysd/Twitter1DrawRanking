@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
       pixiv_id: pixiv_id,
       tumblr_id: tumblr_id,
       status_id: 0,
-      checked_date: nil
+      reliability: calc_reliability
   end
 
   def self.create_following_users(user)
@@ -59,11 +59,11 @@ class User < ActiveRecord::Base
   def calc_reliability
     return 100 unless pixiv_id.nil?
     return 60 if maybe_illustrator?
+    0
+    # following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
+    # return 0 if following_user_ids.to_a.empty?
 
-    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
-    return 0 if following_user_ids.to_a.empty?
-
-    calc_known_unknown_ratio following_user_ids
+    # calc_known_unknown_ratio following_user_ids
   end
 
   def maybe_illustrator?
