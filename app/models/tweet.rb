@@ -30,7 +30,7 @@ class Tweet < ActiveRecord::Base
   # @param [Array<Twitter::User>] 対象ユーザ
   def self.fetch_by_stream(target_users)
     AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
-      next if media? tweet
+      next unless media? tweet
 
       genre = (Genre.find_by_hash_tags tweet.hashtags) || (Genre.find_by_alias 'original')
 
