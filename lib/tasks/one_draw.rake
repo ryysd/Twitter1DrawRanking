@@ -41,5 +41,16 @@ namespace :one_draw do
         Rake::Task["one_draw:illust:fetch"].reenable
       end
     end
+
+    desc ''
+    task fetch_by_stream: :environment do
+      targets = User.where 'followers_count > 3000 && reliability > 50'
+      Tweet.fetch_by_stream targets.map(&:id).join ','
+    end
+
+    desc ''
+    task update_reliability: :environment do
+      (User.where 'reliability IS NULL').each(&:update_reliability)
+    end
   end
 end

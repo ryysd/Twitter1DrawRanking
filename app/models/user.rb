@@ -20,8 +20,7 @@ class User < ActiveRecord::Base
       follow_count: user.friends_count,
       pixiv_id: pixiv_id,
       tumblr_id: tumblr_id,
-      status_id: 0,
-      reliability: calc_reliability
+      status_id: 0
   end
 
   def self.create_following_users(user)
