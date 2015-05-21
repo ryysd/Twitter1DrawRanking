@@ -3,7 +3,7 @@ class Tweet < ActiveRecord::Base
   has_many :illusts, dependent: :destroy
   has_many :tweet_values, dependent: :destroy
   has_many :tweet_rankings
-  belongs_to :users
+  belongs_to :user
 
   UPDATE_INTERVAL_MINUTE = 15
   UPDATE_INTERVAL_SEC = UPDATE_INTERVAL_MINUTE * 60
