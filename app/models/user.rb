@@ -17,9 +17,10 @@ class User < ActiveRecord::Base
       icon_url: user.profile_image_url,
       description: user.description,
       followers_count: user.followers_count,
-      follow_count: 0,
+      follow_count: user.friends_count,
       pixiv_id: pixiv_id,
       tumblr_id: tumblr_id,
+      status_id: 0,
       checked_date: nil
   end
 
@@ -32,6 +33,13 @@ class User < ActiveRecord::Base
     end
   end
 
+  def self.update_follow_count(users)
+    ids = users.map(&:id)
+    do_retriable { AuthedTwitter.client.users ids }.each do |user|
+      (User.find_by_id user.id).update_attributes follow_count: user.friends_count
+    end
+  end
+
   def update_pixiv_id_by_object(user)
     urls = User.get_urls_from_object user
     pixiv_id = (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
@@ -40,24 +48,37 @@ class User < ActiveRecord::Base
   end
 
   def update_reliability
-    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
-
-    update_attributes follow_count: following_user_ids.to_a.size,
-      reliability: (calc_reliability following_user_ids)
+    update_attributes reliability: calc_reliability
   end
 
-  def calc_reliability(following_user_ids)
+  def update_follow_count
+    user = (do_retriable { AuthedTwitter.client.users id }).first
+    update_attributes follow_count user.friends_count
+  end
+
+  def calc_reliability
     return 100 unless pixiv_id.nil?
+    return 60 if maybe_illustrator?
+
+    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
     return 0 if following_user_ids.to_a.empty?
 
     calc_known_unknown_ratio following_user_ids
   end
 
+  def maybe_illustrator?
+    condition1 = /(イラスト|漫画|絵|マンガ|挿絵).*(描|書|か)(い|き|く)/.match description
+    condition2 = /(キャラデザ|キャラクターデザイン|原画)/.match description
+    condition3 = /(イラストレータ|アニメータ|漫画家|マンガ家|マンガ屋|漫画屋|絵師|原画家|アニメ屋|連載)/.match description
+    negative_condition1 = /(bot|フォロー用)/.match description
+    negative_condition2 = /(運営|公式|開発)/.match name
+
+    (!condition1.nil? || !condition2.nil? || !condition3.nil?) && negative_condition1.nil? && negative_condition2.nil?
+  end
+
   def calc_known_unknown_ratio(following_user_ids)
     known_users = User.where id: following_user_ids.to_a
 
-    pp known_users.to_a.size
-    pp following_user_ids.to_a.size
     known_users.size * 100 / following_user_ids.to_a.size
   end
 
