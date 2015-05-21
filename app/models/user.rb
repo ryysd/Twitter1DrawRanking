@@ -8,9 +8,7 @@ class User < ActiveRecord::Base
   def self.create_from_object(user)
     return if User.exists? user.id
 
-    urls = get_urls_from_object user
-    pixiv_id = (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
-    tumblr_id = MediaUrl.get_tumblr_id_from_urls urls
+    pixiv_id = get_pixiv_id_from_object user
 
     User.create! id: user.id,
       name: user.name,
@@ -19,7 +17,7 @@ class User < ActiveRecord::Base
       followers_count: user.followers_count,
       follow_count: user.friends_count,
       pixiv_id: pixiv_id,
-      tumblr_id: tumblr_id,
+      tumblr_id: nil,
       status_id: 0
   end
 
@@ -39,10 +37,15 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_pixiv_id_by_object(user)
-    urls = User.get_urls_from_object user
-    pixiv_id = (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
+  def self.update_pixiv_id_by_objects(users)
+    ids = users.map(&:id)
+    do_retriable { AuthedTwitter.client.users ids }.each do |user|
+      (User.find_by_id user.id).update_pixiv_id_by_object user
+    end
+  end
 
+  def update_pixiv_id_by_object(user)
+    pixiv_id = User.get_pixiv_id_from_object user
     update_attributes pixiv_id: pixiv_id unless pixiv_id.nil?
   end
 
@@ -79,6 +82,11 @@ class User < ActiveRecord::Base
     known_users = User.where id: following_user_ids.to_a
 
     known_users.size * 100 / following_user_ids.to_a.size
+  end
+
+  def self.get_pixiv_id_from_object(user)
+    urls = get_urls_from_object user
+    (MediaUrl.get_pixiv_id_from_urls urls) || (MediaUrl.get_pixiv_id_from_description user.description)
   end
 
   def self.get_urls_from_object(user)
