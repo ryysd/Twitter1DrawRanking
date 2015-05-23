@@ -21,8 +21,8 @@ class User < ActiveRecord::Base
       status_id: 0
   end
 
-  def self.create_following_users(user)
-    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids user.id }
+  def create_following_users
+    following_user_ids = do_retriable { AuthedTwitter.client.friend_ids id }
     sliced_ids = following_user_ids.each_slice(100).to_a
 
     sliced_ids.each do |ids|
