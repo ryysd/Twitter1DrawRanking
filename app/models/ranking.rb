@@ -4,6 +4,7 @@ class Ranking < ActiveRecord::Base
   has_many :tweets, through: :tweet_rankings
 
   MAX_TWEET_NUM = 100
+  RELIABILITY_THRESHOLD = 20
 
   scope :by_created_at, ->(created_at) {where(created_at: created_at)}
   scope :by_genre_id, ->(genre_id) {where(genre_id: genre_id)}
@@ -24,7 +25,7 @@ class Ranking < ActiveRecord::Base
       .joins(:user)
       .joins(:tweet_values)
       .eager_load(:tweet_values)
-      .where('users.reliability > 20 AND tweet_values.favorite_count > tweet_values.retweet_count')
+      .where("users.reliability > #{RELIABILITY_THRESHOLD} AND tweet_values.favorite_count > tweet_values.retweet_count")
       .order('tweet_values.updated_at')
       .uniq { |tweet| tweet.id }
   end

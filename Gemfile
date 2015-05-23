@@ -22,6 +22,8 @@ gem 'html2slim'
 
 gem 'rails_best_practices'
 
+gem 'dalli'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
