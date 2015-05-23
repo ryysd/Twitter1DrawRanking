@@ -26,16 +26,6 @@ class Ranking < ActiveRecord::Base
     ranking
   end
 
-  def update_cache
-    compressed_json = Zlib::Deflate.deflate to_json use_cache: false
-    update_attributes cache: compressed_json
-  end
-
-  def json_cache
-    return nil if cache.nil?
-    Zlib::Inflate.inflate cache
-  end
-
   def valid_tweets
     columns = [
       'tweets.id',
@@ -59,12 +49,7 @@ class Ranking < ActiveRecord::Base
       .order('score DESC')
   end
 
-  def to_json(size: 180, use_cache: false)
-    if use_cache
-      update_cache if json_cache.nil?
-      return json_cache
-    end
-
+  def to_json(size: 180)
     tweet_hashes = (valid_tweets.take size).map(&:to_h)
 
     Jbuilder.encode do |json|
