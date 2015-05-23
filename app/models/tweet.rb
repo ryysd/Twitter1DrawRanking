@@ -123,16 +123,16 @@ class Tweet < ActiveRecord::Base
 
   # ハッシュに変換
   def to_h
-    value = latest_value
-    score = value.score
+    # value = latest_value
+    # score = value.score
 
     illust_urls = illusts.map(&:url)
 
     {
       id: id.to_s,
       tweet: text,
-      favorite_count: value.favorite_count,
-      retweet_count: value.retweet_count,
+      favorite_count: favorite_count,
+      retweet_count: retweet_count,
       illust_urls: illust_urls,
       score: score
     }

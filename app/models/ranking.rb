@@ -27,7 +27,7 @@ class Ranking < ActiveRecord::Base
   end
 
   def update_cache
-    compressed_json = Zlib::Deflate.deflate to_json
+    compressed_json = Zlib::Deflate.deflate to_json use_cache: false
     update_attributes cache: compressed_json
   end
 
@@ -37,23 +37,35 @@ class Ranking < ActiveRecord::Base
   end
 
   def valid_tweets
+    columns = [
+      'tweets.id',
+      'tweets.text',
+      'MAX(tweet_values.favorite_count) AS favorite_count',
+      'MAX(tweet_values.retweet_count) AS retweet_count',
+      'MAX(tweet_values.favorite_count) + MAX(tweet_values.retweet_count) AS score'
+    ]
+
+    conditions = [
+      "users.reliability > #{RELIABILITY_THRESHOLD}",
+      'tweet_values.favorite_count > tweet_values.retweet_count'
+    ]
+
     tweets
-      .joins(:user)
-      .joins(:tweet_values)
-      .eager_load(:tweet_values)
+      .select(columns.join ',')
+      .joins([:user, :tweet_values])
       .includes(:illusts)
-      .where("users.reliability > #{RELIABILITY_THRESHOLD} AND tweet_values.favorite_count > tweet_values.retweet_count")
-      .order('tweet_values.updated_at')
-      .uniq { |tweet| tweet.id }
+      .where(conditions.join 'AND ')
+      .group('tweets.id')
+      .order('score DESC')
   end
 
-  def to_json(use_cache: false)
+  def to_json(size: 180, use_cache: false)
     if use_cache
       update_cache if json_cache.nil?
       return json_cache
     end
 
-    tweet_hashes = valid_tweets.map(&:to_h)
+    tweet_hashes = (valid_tweets.take size).map(&:to_h)
 
     Jbuilder.encode do |json|
       json.genre genre.name
