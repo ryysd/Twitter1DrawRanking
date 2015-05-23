@@ -25,6 +25,13 @@ class TweetValue < ActiveRecord::Base
       reply_count: 0
   end
 
+  def hot_score
+    past_sec = (DateTime.now.to_time - updated_at.to_time) / 60
+    past_sec = 1 if past_sec == 0
+
+    favorite_count.to_f / past_sec
+  end
+
   def score
     favorite_count * 2 + retweet_count
   end

@@ -17,7 +17,8 @@ class MediaUrl
     result[:id] unless result.nil?
   end
 
-  def self.is_short_url(url)
+  def self.short_url?(url)
+    return true if url.include? 'pixiv.me'
     !((url.include? 'www') || (url.include? '.com') || (url.include? 'pixiv') || (url.include? 'tumblr'))
   end
 

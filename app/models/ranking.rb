@@ -20,7 +20,7 @@ class Ranking < ActiveRecord::Base
   end
 
   def to_json
-    tweet_hashes = (tweets.includes [:illusts, :tweet_values]).select(&:valid_media?).map(&:to_h)
+    tweet_hashes = (tweets.includes [:illusts, :tweet_values, :user]).select { |tweet| tweet.valid_media? && !tweet.user.reliability.nil? && tweet.user.reliability > 20 }.map(&:to_h)
 
     Jbuilder.encode do |json|
       json.genre genre.name

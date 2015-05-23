@@ -3,7 +3,7 @@ class Tweet < ActiveRecord::Base
   has_many :illusts, dependent: :destroy
   has_many :tweet_values, dependent: :destroy
   has_many :tweet_rankings
-  belongs_to :users
+  belongs_to :user
 
   UPDATE_INTERVAL_MINUTE = 15
   UPDATE_INTERVAL_SEC = UPDATE_INTERVAL_MINUTE * 60
@@ -30,7 +30,7 @@ class Tweet < ActiveRecord::Base
   # @param [Array<Twitter::User>] 対象ユーザ
   def self.fetch_by_stream(target_users)
     AuthedTwitter.streaming_client.filter(follow: target_users) do |tweet|
-      next if media? tweet
+      next unless media? tweet
 
       genre = (Genre.find_by_hash_tags tweet.hashtags) || (Genre.find_by_alias 'original')
 
@@ -53,7 +53,7 @@ class Tweet < ActiveRecord::Base
   # 指定したツイートが既に存在するかを確認し、存在する場合は更新する
   # ただし、UPDATE_INTERVAL_MINUTE分以内に更新されている場合は更新を行わない
   def self.update_if_already_exist(tweet)
-    existing_tweet = Tweet.find_by_id origin_tweet.id
+    existing_tweet = Tweet.find_by_id tweet.id
 
     is_exists = !existing_tweet.nil?
     update_by_object tweet if is_exists && existing_tweet.updatable?

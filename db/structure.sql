@@ -81,7 +81,7 @@ CREATE TABLE `rankings` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -111,7 +111,7 @@ CREATE TABLE `tweet_rankings` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3136 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4922 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +130,7 @@ CREATE TABLE `tweet_values` (
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38734 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=84861 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,6 +153,20 @@ CREATE TABLE `tweets` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `user_statuses`
+--
+
+DROP TABLE IF EXISTS `user_statuses`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_statuses` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `value` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `users`
 --
 
@@ -169,8 +183,9 @@ CREATE TABLE `users` (
   `follow_count` int(11) DEFAULT NULL,
   `pixiv_id` int(11) DEFAULT NULL,
   `description` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `checked_date` date DEFAULT NULL,
   `tumblr_id` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `reliability` int(11) DEFAULT NULL,
+  `status_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -184,7 +199,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-19 22:56:11
+-- Dump completed on 2015-05-21  7:45:45
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -238,4 +253,10 @@ INSERT INTO schema_migrations (version) VALUES ('20150510135049');
 INSERT INTO schema_migrations (version) VALUES ('20150519123948');
 
 INSERT INTO schema_migrations (version) VALUES ('20150519135556');
+
+INSERT INTO schema_migrations (version) VALUES ('20150520134627');
+
+INSERT INTO schema_migrations (version) VALUES ('20150520224225');
+
+INSERT INTO schema_migrations (version) VALUES ('20150520224331');
 
