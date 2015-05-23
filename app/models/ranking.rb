@@ -54,7 +54,7 @@ class Ranking < ActiveRecord::Base
       .select(columns.join ',')
       .joins([:user, :tweet_values])
       .includes(:illusts)
-      .where(conditions.join 'AND ')
+      .where(conditions.join ' AND ')
       .group('tweets.id')
       .order('score DESC')
   end
