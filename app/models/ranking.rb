@@ -41,6 +41,7 @@ class Ranking < ActiveRecord::Base
       .joins(:user)
       .joins(:tweet_values)
       .eager_load(:tweet_values)
+      .includes(:illusts)
       .where("users.reliability > #{RELIABILITY_THRESHOLD} AND tweet_values.favorite_count > tweet_values.retweet_count")
       .order('tweet_values.updated_at')
       .uniq { |tweet| tweet.id }
@@ -52,7 +53,7 @@ class Ranking < ActiveRecord::Base
       return json_cache
     end
 
-    tweet_hashes = (valid_tweets.includes [:illusts]).map(&:to_h)
+    tweet_hashes = valid_tweets.map(&:to_h)
 
     Jbuilder.encode do |json|
       json.genre genre.name

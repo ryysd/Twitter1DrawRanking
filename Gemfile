@@ -23,6 +23,7 @@ gem 'html2slim'
 gem 'rails_best_practices'
 
 gem 'dalli'
+gem 'unicorn'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
