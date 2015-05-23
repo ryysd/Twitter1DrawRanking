@@ -19,8 +19,18 @@ class Ranking < ActiveRecord::Base
       created_at: date
   end
 
+  def valid_tweets
+    tweets
+      .joins(:user)
+      .joins(:tweet_values)
+      .eager_load(:tweet_values)
+      .where('users.reliability > 20 AND tweet_values.favorite_count > tweet_values.retweet_count')
+      .order('tweet_values.updated_at')
+      .uniq { |tweet| tweet.id }
+  end
+
   def to_json
-    tweet_hashes = (tweets.includes [:illusts, :tweet_values, :user]).select { |tweet| tweet.valid_media? && !tweet.user.reliability.nil? && tweet.user.reliability > 20 }.map(&:to_h)
+    tweet_hashes = (valid_tweets.includes [:illusts]).map(&:to_h)
 
     Jbuilder.encode do |json|
       json.genre genre.name
