@@ -27,7 +27,7 @@ class Ranking < ActiveRecord::Base
   end
 
   def update_cache
-    compressed_json = Zlib::Deflate.deflate to_json use_cache: false
+    compressed_json = Zlib::Deflate.deflate to_json
     update_attributes cache: compressed_json
   end
 
@@ -46,7 +46,7 @@ class Ranking < ActiveRecord::Base
       .uniq { |tweet| tweet.id }
   end
 
-  def to_json(use_cache: true)
+  def to_json(use_cache: false)
     if use_cache
       update_cache if json_cache.nil?
       return json_cache
