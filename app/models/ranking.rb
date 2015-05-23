@@ -1,3 +1,5 @@
+require 'zlib'
+
 class Ranking < ActiveRecord::Base
   belongs_to :genre
   has_many :tweet_rankings
@@ -14,10 +16,24 @@ class Ranking < ActiveRecord::Base
     target_tweets = (Tweet.by_created_at term).by_genre_id genre.id
     ranking_type = RankingType.daily
 
-    Ranking.create ranking_type_id: ranking_type.id,
+    ranking = Ranking.create ranking_type_id: ranking_type.id,
       genre_id: genre.id,
       tweets: target_tweets,
       created_at: date
+
+    ranking.update_cache
+
+    ranking
+  end
+
+  def update_cache
+    compressed_json = Zlib::Deflate.deflate to_json use_cache: false
+    update_attributes cache: compressed_json
+  end
+
+  def json_cache
+    return nil if cache.nil?
+    Zlib::Inflate.inflate cache
   end
 
   def valid_tweets
@@ -30,7 +46,12 @@ class Ranking < ActiveRecord::Base
       .uniq { |tweet| tweet.id }
   end
 
-  def to_json
+  def to_json(use_cache: true)
+    if use_cache
+      update_cache if json_cache.nil?
+      return json_cache
+    end
+
     tweet_hashes = (valid_tweets.includes [:illusts]).map(&:to_h)
 
     Jbuilder.encode do |json|

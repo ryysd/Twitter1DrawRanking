@@ -81,6 +81,7 @@ CREATE TABLE `rankings` (
   `ranking_type_id` int(11) DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
+  `cache` mediumblob,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -133,7 +134,7 @@ CREATE TABLE `tweet_values` (
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index_tweet_values_on_tweet_id` (`tweet_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=161747 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=170358 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -202,7 +203,7 @@ CREATE TABLE `users` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-05-23 10:54:22
+-- Dump completed on 2015-05-23 15:23:38
 INSERT INTO schema_migrations (version) VALUES ('20150427133456');
 
 INSERT INTO schema_migrations (version) VALUES ('20150427134153');
@@ -268,4 +269,10 @@ INSERT INTO schema_migrations (version) VALUES ('20150523013350');
 INSERT INTO schema_migrations (version) VALUES ('20150523013933');
 
 INSERT INTO schema_migrations (version) VALUES ('20150523015317');
+
+INSERT INTO schema_migrations (version) VALUES ('20150523055654');
+
+INSERT INTO schema_migrations (version) VALUES ('20150523061457');
+
+INSERT INTO schema_migrations (version) VALUES ('20150523062222');
 
