@@ -20,10 +20,6 @@ class Ranking < ActiveRecord::Base
       genre_id: genre.id,
       tweets: target_tweets,
       created_at: date
-
-    ranking.update_cache
-
-    ranking
   end
 
   def valid_tweets

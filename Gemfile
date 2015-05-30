@@ -64,7 +64,7 @@ group :development, :test do
   gem 'pry-byebug'
   gem 'pry-stack_explorer'
 
-  gem 'rack-mini-profiler'
+  # gem 'rack-mini-profiler'
 end
 
 gem 'browserify-rails', '0.5'
